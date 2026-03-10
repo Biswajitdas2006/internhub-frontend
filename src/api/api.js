@@ -1,4 +1,4 @@
-const BASE_URL = "https://internhub-api.onrender.com/api";
+const BASE_URL = "/api";
 
 async function request(method, path, body = null) {
   const headers = { "Content-Type": "application/json" };
