@@ -6,7 +6,6 @@ async function request(method, path, body = null) {
     method,
     headers,
     credentials: "include",   // sends httpOnly cookie automatically
-    mode:"cors",   // allow cross-origin requests
     body: body ? JSON.stringify(body) : null
   });
   if (!res.ok) { const err = await res.text(); throw new Error(err || res.statusText); }
