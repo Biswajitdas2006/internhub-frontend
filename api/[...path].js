@@ -1,21 +1,29 @@
 export default async function handler(req, res) {
-
   const { path = [] } = req.query;
 
-  const url = `https://internhub-api.onrender.com/api/${path.join("/")}`;
+  const targetUrl = `https://internhub-api.onrender.com/api/${path.join("/")}`;
 
-  const response = await fetch(url, {
+  const response = await fetch(targetUrl, {
     method: req.method,
     headers: {
-      "Content-Type": "application/json",
-      cookie: req.headers.cookie || ""
+      ...req.headers,
+      host: undefined
     },
     body: req.method !== "GET" && req.method !== "HEAD"
       ? JSON.stringify(req.body)
-      : undefined
+      : undefined,
+    redirect: "manual"
   });
 
-  const data = await response.text();
+  // copy status
+  res.status(response.status);
 
-  res.status(response.status).send(data);
+  // copy headers
+  response.headers.forEach((value, key) => {
+    res.setHeader(key, value);
+  });
+
+  const data = await response.arrayBuffer();
+
+  res.send(Buffer.from(data));
 }
