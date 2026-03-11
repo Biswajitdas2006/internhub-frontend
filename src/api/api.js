@@ -8,9 +8,12 @@ async function request(method, path, body = null) {
     credentials: "include",   // sends httpOnly cookie automatically
     body: body ? JSON.stringify(body) : null
   });
-  if (!res.ok) { const err = await res.text(); throw new Error(err || res.statusText); }
-  const text = await res.text();
-  try { return text ? JSON.parse(text) : null; } catch { return text; }
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(err || res.statusText);
+  }
+
+  return res.json();
 }
 
 async function requestForm(method, path, formData) {
