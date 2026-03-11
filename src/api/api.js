@@ -1,16 +1,18 @@
 const BASE_URL = "/api";
 
 async function request(method, path, body = null) {
-  const headers = { "Content-Type": "application/json" };
-  const res = await fetch(`${BASE_URL}${path}`, {
+  const res = await fetch(`/api${path}`, {
     method,
-    headers,
-    credentials: "include",   // sends httpOnly cookie automatically
-    body: body ? JSON.stringify(body) : null
+    headers: {
+      "Content-Type": "application/json"
+    },
+    credentials: "include",
+    body: body ? JSON.stringify(body) : undefined
   });
+
   if (!res.ok) {
-    const err = await res.text();
-    throw new Error(err || res.statusText);
+    const text = await res.text();
+    throw new Error(text);
   }
 
   return res.json();
