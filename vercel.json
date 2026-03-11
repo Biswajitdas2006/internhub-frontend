@@ -1,7 +1,8 @@
 {
-  "functions": {
-    "api/**/*.js": {
-      "runtime": "@vercel/node"
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "https://internhub-api.onrender.com/api/$1"
     }
-  }
+  ]
 }
