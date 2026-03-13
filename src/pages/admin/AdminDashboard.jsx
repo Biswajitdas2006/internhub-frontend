@@ -6,7 +6,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pi
 import "../../styles/dashboard.css";
 import "../../styles/admin.css";
 
-const BASE_URL = "https://localhost:7286/api";
+const BASE_URL = "/api";
 const STATUS_LABELS = { 0: "Pending", 1: "Approved", 2: "Rejected" };
 function normalizeStatus(s) { return typeof s === "number" ? STATUS_LABELS[s] ?? "Pending" : s; }
 async function openResume(applicationId, filename, download = false) {
@@ -273,9 +273,16 @@ function AddInternshipView({ showToast }) {
   const handleSubmit = async (e) => {
     e.preventDefault(); setLoading(true);
     try {
-      const payload = { company:form.company, role:form.role, description:form.description,
-        location:form.location, stipend:form.stipend,
-        startDate:form.startDate||null, endDate:form.endDate||null, deadline:form.deadline||null };
+      const payload = {
+        company: form.company,
+        role: form.role,
+        description: form.description,
+        location: form.location,
+        stipend: form.stipend,
+        startDate: form.startDate ? new Date(form.startDate).toISOString() : null,
+        endDate: form.endDate ? new Date(form.endDate).toISOString() : null,
+        deadline: form.deadline ? new Date(form.deadline).toISOString() : null
+      };
       if (editId) {
         await internshipsAdminApi.update(editId, payload);
         setInternships(p=>p.map(i=>i.id===editId?{...i,...payload,id:editId}:i));
