@@ -21,7 +21,7 @@ async function request(method, path, body = null) {
 async function requestForm(method, path, formData) {
   const res = await fetch(`${BASE_URL}${path}`, {
     method,
-    credentials: "include",   // sends httpOnly cookie automatically
+    credentials: "include",
     body: formData
   });
   if (!res.ok) { const err = await res.text(); throw new Error(err || res.statusText); }
@@ -31,7 +31,40 @@ async function requestForm(method, path, formData) {
 
 export const authApi = {
   register: (dto) => request("POST", "/auth/register", dto),
-  login: (dto) => request("POST", "/auth/login", dto),
+
+  // Password login — returns { role, name } directly, no OTP step
+  login: async ({ email, password }) => {
+    const res = await fetch(`${BASE_URL}/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ email, password })
+    });
+    if (!res.ok) {
+      const text = await res.text();
+      let message = "Invalid email or password.";
+      try { message = JSON.parse(text).message || message; } catch {}
+      throw new Error(message);
+    }
+    return res.json(); // returns { role, name }
+  },
+
+  // Email OTP login Step 1 — sends OTP to email, no password needed
+  sendLoginOtp: async (email) => {
+    const res = await fetch(`${BASE_URL}/auth/login-otp`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ email })
+    });
+    if (!res.ok) {
+      const text = await res.text();
+      let message = "No account found with this email.";
+      try { message = JSON.parse(text).message || message; } catch {}
+      throw new Error(message);
+    }
+  },
+
   verifyOtp: (dto) => request("POST", "/auth/verify-otp", dto),
   forgotPassword: (email) => request("POST", "/auth/forgot-password", { email }),
   verifyForgotOtp: (dto) => request("POST", "/auth/verify-forgot-otp", dto),
@@ -89,7 +122,7 @@ export const analyticsApi = {
 export const exportApi = {
   downloadApplications: async () => {
     const res = await fetch(`${BASE_URL}/export/applications`, {
-      credentials: "include"   // cookie sent automatically
+      credentials: "include"
     });
     if (!res.ok) throw new Error("Export failed");
     const blob = await res.blob();
@@ -110,7 +143,7 @@ export const usersApi = {
   getPhotoUrl: () => `${BASE_URL}/users/me/photo?t=${Date.now()}`,
   fetchPhoto: async () => {
     const res = await fetch(`${BASE_URL}/users/me/photo`, {
-      credentials: "include"   // cookie sent automatically
+      credentials: "include"
     });
     if (!res.ok) return null;
     const blob = await res.blob();
