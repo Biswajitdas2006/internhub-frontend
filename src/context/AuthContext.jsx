@@ -6,29 +6,39 @@ const AuthContext = createContext(null);
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
 
-  useEffect(() => {
-    // Check for Google OAuth redirect query params
-    const params = new URLSearchParams(window.location.search);
-    const isGoogle = params.get("google");
-    const googleRole  = params.get("role");
-    const googleEmail = params.get("email");
+useEffect(() => {
+    const handleGoogleLogin = async () => {
+        const params = new URLSearchParams(window.location.search);
+        const token = params.get("token");
 
-    if (isGoogle && googleRole && googleEmail) {
-      // Store in localStorage like normal login
-      localStorage.setItem("role", googleRole);
-      localStorage.setItem("email", googleEmail);
-      setUser({ role: googleRole, email: googleEmail });
+        if (token) {
+            // Clean URL immediately
+            window.history.replaceState({}, "", window.location.pathname);
+            try {
+                // Exchange token for role and email
+                const res = await fetch(`/api/auth/google/exchange?token=${token}`, {
+                    credentials: "include"
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    localStorage.setItem("role", data.role);
+                    localStorage.setItem("email", data.email);
+                    setUser({ role: data.role, email: data.email });
+                }
+            } catch (err) {
+                console.error("Google exchange failed:", err);
+            }
+            return;
+        }
 
-      // Clean up URL — remove query params without page reload
-      window.history.replaceState({}, "", window.location.pathname);
-      return;
-    }
+        // Normal login check from localStorage
+        const role  = localStorage.getItem("role");
+        const email = localStorage.getItem("email");
+        if (role) setUser({ role, email });
+    };
 
-    // Normal login check from localStorage
-    const role  = localStorage.getItem("role");
-    const email = localStorage.getItem("email");
-    if (role) setUser({ role, email });
-  }, []);
+    handleGoogleLogin();
+}, []);
 
   const login = ({ role }, email) => {
     localStorage.setItem("role", role);
