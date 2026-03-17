@@ -15,21 +15,41 @@ export default function StudentDashboard() {
   const [darkMode, setDarkMode] = useState(true);
   const [qaInternship, setQaInternship] = useState(null);
   const [notices, setNotices] = useState([]);
+  const [sidebarOpen, setSidebarOpen] = useState(false);  // ← ADD
 
   const showToast = (msg) => { setToast(msg); setTimeout(()=>setToast(""),3500); };
 
   useEffect(() => { document.body.classList.toggle("light-mode", !darkMode); }, [darkMode]);
   useEffect(() => { if(view==="notices") noticesApi.getAll().then(setNotices).catch(console.error); }, [view]);
 
+  const handleNav = (v) => { setView(v); setSidebarOpen(false); };  // ← ADD
+
   return (
     <div className="dashboard">
       {toast && <div className="toast">{toast}</div>}
-      <aside className="sidebar">
+
+      {/* ── MOBILE HEADER ── */}
+      <div className="mobile-header">
+        <div className="mobile-brand">
+          <span style={{color:"var(--accent)"}}>◈</span> InternHub
+        </div>
+        <button className="hamburger-btn" onClick={() => setSidebarOpen(o => !o)}>
+          {sidebarOpen ? "✕" : "☰"}
+        </button>
+      </div>
+
+      {/* ── OVERLAY ── */}
+      <div
+        className={`sidebar-overlay ${sidebarOpen ? "open" : ""}`}
+        onClick={() => setSidebarOpen(false)}
+      />
+
+      <aside className={`sidebar ${sidebarOpen ? "open" : ""}`}>
         <div className="sidebar-brand"><span className="brand-icon">◈</span><span>InternHub</span></div>
         <nav className="sidebar-nav">
           {[["internships","⊞","Internships"],["applications","◉","My Applications"],
             ["notices","📢","Notices"],["profile","⊙","Profile"]].map(([v,icon,label])=>(
-            <button key={v} className={view===v?"active":""} onClick={()=>setView(v)}>
+            <button key={v} className={view===v?"active":""} onClick={()=>handleNav(v)}>
               <span className="nav-icon">{icon}</span> {label}
             </button>
           ))}
@@ -38,9 +58,13 @@ export default function StudentDashboard() {
           <button className="theme-toggle" onClick={()=>setDarkMode(d=>!d)}>
             {darkMode ? "☀️ Light Mode" : "🌙 Dark Mode"}
           </button>
-          <button className="sidebar-logout" onClick={async () => {try { await authApi.logout(); } catch {}logout();navigate("/login");}}>← Logout</button>
+          <button className="sidebar-logout" onClick={async () => {
+            try { await authApi.logout(); } catch {}
+            logout(); navigate("/login");
+          }}>← Logout</button>
         </div>
       </aside>
+
       <main className="main-content">
         {view==="internships"   && <InternshipsView navigate={navigate} showToast={showToast} qaInternship={qaInternship} setQaInternship={setQaInternship} />}
         {view==="applications"  && <ApplicationsView showToast={showToast} />}

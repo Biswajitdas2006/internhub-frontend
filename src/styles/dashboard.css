@@ -966,3 +966,145 @@ body.light-mode .admin-table { background: #fff; }
   font-family: 'DM Sans', sans-serif;
   cursor: pointer;
 }
+/* ── MOBILE HAMBURGER BUTTON ─────────────────── */
+.mobile-header {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 56px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  z-index: 100;
+}
+
+.mobile-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Syne', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.hamburger-btn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text);
+  width: 38px; height: 38px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* ── SIDEBAR OVERLAY ─────────────────────────── */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 150;
+}
+
+/* ── RESPONSIVE BREAKPOINTS ──────────────────── */
+@media (max-width: 768px) {
+
+  /* Show mobile header */
+  .mobile-header { display: flex; }
+
+  /* Push main content down */
+  .main-content {
+    margin-left: 0 !important;
+    padding: 72px 16px 24px !important;
+  }
+
+  /* Sidebar becomes slide-in drawer */
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 200;
+    width: 260px !important;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  /* Show overlay when sidebar open */
+  .sidebar-overlay.open { display: block; }
+
+  /* Stack internship grid to 1 column */
+  .internship-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Stats grid: 2 columns on mobile */
+  .stats-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 12px !important;
+  }
+
+  .stat-number { font-size: 1.5rem !important; }
+
+  /* Stack two-col layouts */
+  .two-col-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Stack form row 2 */
+  .form-row-2 {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* View header stack */
+  .view-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .view-header h2 { font-size: 1.4rem !important; }
+
+  /* Search filter row stack */
+  .search-filter-row {
+    flex-direction: column;
+  }
+
+  /* Filter tabs scroll */
+  .filter-tabs {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 4px;
+  }
+
+  /* Application item stack */
+  .application-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  /* Profile layout stack */
+  .profile-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Toast position */
+  .toast {
+    bottom: 16px;
+    right: 16px;
+    left: 16px;
+    text-align: center;
+  }
+
+  /* Card actions full width */
+  .card-actions { flex-direction: row; }
+  .btn-apply { flex: 1; }
+
+  /* App card */
+  .app-card-right { flex-direction: row; align-items: center; }
+}

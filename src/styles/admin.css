@@ -576,3 +576,35 @@
   font-family: 'DM Sans', sans-serif;
 }
 .btn-delete-q:hover { background: rgba(255,107,107,0.1); }
+/* ── MOBILE ADMIN FIXES ──────────────────────── */
+@media (max-width: 768px) {
+
+  /* Charts grid single column */
+  .charts-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .chart-card-full { grid-column: auto !important; }
+
+  /* Detail grid single column */
+  .detail-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Table horizontal scroll */
+  .admin-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .admin-table { min-width: 600px; }
+
+  /* Posted list max height on mobile */
+  .posted-list { max-height: none !important; }
+  .form-panel { max-height: none !important; }
+
+  /* Export button full width */
+  .btn-export { width: 100%; text-align: center; }
+
+  /* Search filter */
+  .search-filter-row { flex-direction: column; }
+}

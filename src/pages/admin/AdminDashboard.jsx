@@ -25,6 +25,7 @@ export default function AdminDashboard() {
   const [view, setView] = useState("applications");
   const [toast, setToast] = useState("");
   const [darkMode, setDarkMode] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);  // ← ADD
 
   const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(""), 3500); };
 
@@ -32,10 +33,29 @@ export default function AdminDashboard() {
     document.body.classList.toggle("light-mode", !darkMode);
   }, [darkMode]);
 
+  const handleNav = (v) => { setView(v); setSidebarOpen(false); };  // ← ADD
+
   return (
     <div className="dashboard">
       {toast && <div className="toast">{toast}</div>}
-      <aside className="sidebar">
+
+      {/* ── MOBILE HEADER ── */}
+      <div className="mobile-header">
+        <div className="mobile-brand">
+          <span style={{color:"var(--accent)"}}>◈</span> InternHub
+        </div>
+        <button className="hamburger-btn" onClick={() => setSidebarOpen(o => !o)}>
+          {sidebarOpen ? "✕" : "☰"}
+        </button>
+      </div>
+
+      {/* ── OVERLAY ── */}
+      <div
+        className={`sidebar-overlay ${sidebarOpen ? "open" : ""}`}
+        onClick={() => setSidebarOpen(false)}
+      />
+
+      <aside className={`sidebar ${sidebarOpen ? "open" : ""}`}>
         <div className="sidebar-brand"><span className="brand-icon">◈</span><span>InternHub</span></div>
         <div className="admin-badge">Admin Panel</div>
         <nav className="sidebar-nav">
@@ -45,9 +65,8 @@ export default function AdminDashboard() {
             ["notices","📢","Notices"],
             ["analytics","📊","Analytics"],
             ["qa","💬","Q&A"],
-
           ].map(([v, icon, label]) => (
-            <button key={v} className={view === v ? "active" : ""} onClick={() => setView(v)}>
+            <button key={v} className={view === v ? "active" : ""} onClick={() => handleNav(v)}>
               <span className="nav-icon">{icon}</span> {label}
             </button>
           ))}
@@ -56,9 +75,13 @@ export default function AdminDashboard() {
           <button className="theme-toggle" onClick={() => setDarkMode(d => !d)}>
             {darkMode ? "☀️ Light Mode" : "🌙 Dark Mode"}
           </button>
-          <button className="sidebar-logout" onClick={async () => {try { await authApi.logout(); } catch {}logout();navigate("/login");}}>← Logout</button>
+          <button className="sidebar-logout" onClick={async () => {
+            try { await authApi.logout(); } catch {}
+            logout(); navigate("/login");
+          }}>← Logout</button>
         </div>
       </aside>
+
       <main className="main-content">
         {view === "applications" && <ApplicationsView showToast={showToast} />}
         {view === "internships"  && <AddInternshipView showToast={showToast} />}
