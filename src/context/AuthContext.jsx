@@ -11,27 +11,32 @@ useEffect(() => {
         const params = new URLSearchParams(window.location.search);
         const token = params.get("token");
 
+        console.log("AuthContext loaded, token:", token); // debug
+
         if (token) {
-            // Clean URL immediately
             window.history.replaceState({}, "", window.location.pathname);
             try {
-                // Exchange token for role and email
+                console.log("Calling exchange endpoint..."); // debug
                 const res = await fetch(`/api/auth/google/exchange?token=${token}`, {
                     credentials: "include"
                 });
+                console.log("Exchange response status:", res.status); // debug
                 if (res.ok) {
                     const data = await res.json();
+                    console.log("Exchange data:", data); // debug
                     localStorage.setItem("role", data.role);
                     localStorage.setItem("email", data.email);
                     setUser({ role: data.role, email: data.email });
+                } else {
+                    const err = await res.text();
+                    console.error("Exchange failed:", err); // debug
                 }
             } catch (err) {
-                console.error("Google exchange failed:", err);
+                console.error("Google exchange error:", err);
             }
             return;
         }
 
-        // Normal login check from localStorage
         const role  = localStorage.getItem("role");
         const email = localStorage.getItem("email");
         if (role) setUser({ role, email });
