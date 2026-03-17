@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { internshipsApi, applicationsApi, usersApi, noticesApi, qaApi } from "../../api/api";
+import { authApi, internshipsApi, applicationsApi, usersApi, noticesApi, qaApi } from "../../api/api";
 import { useAuth } from "../../context/AuthContext";
 import "../../styles/dashboard.css";
 

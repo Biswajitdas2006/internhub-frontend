@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { applicationsApi, internshipsApi, internshipsAdminApi, noticesApi, analyticsApi, exportApi, qaApi } from "../../api/api";
-import { useAuth } from "../../context/AuthContext";
+import { authApi, applicationsApi, internshipsApi, internshipsAdminApi, noticesApi, analyticsApi, exportApi, qaApi } from "../../api/api";import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import "../../styles/dashboard.css";
