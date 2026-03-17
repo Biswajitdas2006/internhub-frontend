@@ -23,9 +23,8 @@ export function AuthProvider({ children }) {
             localStorage.setItem("email", data.email);
             setUser({ role: data.role, email: data.email });
           }
-        } catch (err) {
-          console.error("Google exchange error:", err);
-        } finally {
+        } catch { }
+         finally {
           setLoading(false);
         }
         return;

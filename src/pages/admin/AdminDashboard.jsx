@@ -120,7 +120,7 @@ function ApplicationsView({ showToast }) {
       const data = await applicationsApi.getAll(params);
       setApplications((data.items || data).map(a => ({ ...a, status: normalizeStatus(a.status) })));
       setTotal(data.total || 0);
-    } catch (e) { console.error(e); }
+      } catch { }
     finally { setLoading(false); }
   };
 

@@ -20,7 +20,7 @@ export default function StudentDashboard() {
   const showToast = (msg) => { setToast(msg); setTimeout(()=>setToast(""),3500); };
 
   useEffect(() => { document.body.classList.toggle("light-mode", !darkMode); }, [darkMode]);
-  useEffect(() => { if(view==="notices") noticesApi.getAll().then(setNotices).catch(console.error); }, [view]);
+  useEffect(() => { if(view==="notices") noticesApi.getAll().then(setNotices).catch(() => {}); }, [view]);
 
   const handleNav = (v) => { setView(v); setSidebarOpen(false); };  // ← ADD
 
@@ -90,7 +90,7 @@ function InternshipsView({ navigate, showToast, qaInternship, setQaInternship })
       const data = await internshipsApi.getAll({ search, page, pageSize });
       setInternships(data.items || []);
       setTotalPages(Math.ceil((data.totalCount || 0) / pageSize));
-    } catch(e) { console.error(e); }
+    } catch { }
     finally { setLoading(false); }
   };
 
@@ -315,7 +315,7 @@ function ApplicationsView({ showToast }) {
     try {
       const data = await applicationsApi.getMyApplications();
       setApplications(data.map(a=>({...a,status:normalizeStatus(a.status)})));
-    } catch(e) { console.error(e); }
+    } catch { }
     finally { setLoading(false); }
   };
 
@@ -397,9 +397,9 @@ function ProfileView({ showToast }) {
   const fileRef = useRef();
 
   useEffect(() => {
-    usersApi.getMe().then(p=>{ setProfile(p); setName(p.name); }).catch(console.error);
-    usersApi.getMyStats().then(setStats).catch(console.error);
-    usersApi.fetchPhoto().then(url=>{ if(url) setPhotoUrl(url); }).catch(()=>{});
+    usersApi.getMe().then(p=>{ setProfile(p); setName(p.name); }).catch(() => {});
+    usersApi.getMyStats().then(setStats).catch(() => {});
+    usersApi.fetchPhoto().then(url=>{ if(url) setPhotoUrl(url); }).catch(() => {});
   }, []);
 
   const handleSave = async () => {
